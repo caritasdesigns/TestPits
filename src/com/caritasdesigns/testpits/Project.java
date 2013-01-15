@@ -30,22 +30,20 @@ public class Project extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.project);
 
-		//Set View
-		setContentView(R.layout.project_update);
-
+		//Setup View
 		button = (Button) findViewById(R.id.addUpdateProject);
 		projectName = (EditText) findViewById(R.id.projectName);
 		client = (EditText) findViewById(R.id.client);
-		//Prepopulate the fields
-		this.prepopUpdateFields();
 		
-		this.projectReadMode();
-
 		projectName.setOnKeyListener(this.createOnKeyListener(projectName));
 		client.setOnKeyListener(this.createOnKeyListener(client));
 		
-		
+		//Prepopulate the fields
+		this.prepopUpdateFields();
+		this.projectReadMode();
+
 		button.setOnClickListener(new OnClickListener() {
 			
 			@Override
