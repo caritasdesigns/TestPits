@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">testpits</string>
+    <string name="project_addProjectButton">Add Project</string>
+    <string name="menu_settings">Settings</string>
+    <string name="project_Title">Projects</string>
+    <string name="updateProject_name">Project Name</string>
+    <string name="project_title_addUpdateProject">Add/Update Project</string>
+
+</resources>
