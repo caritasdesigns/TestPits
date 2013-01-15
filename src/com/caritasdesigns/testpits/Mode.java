@@ -2,5 +2,5 @@ package com.caritasdesigns.testpits;
 
 public enum Mode {
 
-	PROJECT_ADD_MODE, PROJECT_UPDATE_MODE
+	PROJECT_CREATE_MODE, PROJECT_UPDATE_MODE, PROJECT_READ_MODE
 }

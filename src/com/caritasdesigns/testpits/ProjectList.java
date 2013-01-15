@@ -23,7 +23,7 @@ public class ProjectList extends Activity {
 	private Button addProject;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
-	private List<Project> projectList;
+	private List<ProjectModel> projectList;
 	private ListView list;
 	private ProjectAdapter adapter;
 	
@@ -47,10 +47,10 @@ public class ProjectList extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				Project o = projectList.get(position);
-				ProjectUpdate.setMode(Mode.PROJECT_UPDATE_MODE);
-				ProjectUpdate.setProjectID(o.getId());
-				Intent intent = new Intent(view.getContext(), ProjectUpdate.class);
+				ProjectModel o = projectList.get(position);
+				Project.setMode(Mode.PROJECT_READ_MODE);
+				Project.setProjectID(o.getId());
+				Intent intent = new Intent(view.getContext(), Project.class);
 				view.getContext().startActivity(intent);
 				Log.d("ProjectAdd","onClick'd with addProjectButton: "+ R.id.addProject);	
 			}
@@ -61,8 +61,8 @@ public class ProjectList extends Activity {
 		addProject.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ProjectUpdate.setMode(Mode.PROJECT_ADD_MODE);
-				Intent intent = new Intent(v.getContext(), ProjectUpdate.class);
+				Project.setMode(Mode.PROJECT_CREATE_MODE);
+				Intent intent = new Intent(v.getContext(), Project.class);
 				v.getContext().startActivity(intent);
 				Log.d("ProjectAdd","onClick'd with addProjectButton: "+ R.id.addProject);
 			}
@@ -93,8 +93,8 @@ public class ProjectList extends Activity {
 	}
 	
 	
-	private List<Project> getProjectsFromDb(){
-		List<Project> list = new ArrayList<Project>();
+	private List<ProjectModel> getProjectsFromDb(){
+		List<ProjectModel> list = new ArrayList<ProjectModel>();
 		db = dbHelper.getReadableDatabase();
 		String[] columns = new String[]{"_id","name","client"};
 		
@@ -103,7 +103,7 @@ public class ProjectList extends Activity {
 			while( cursor.moveToNext()) {
 				Log.d("AddToList","Item ID: "+ cursor.getInt(0));
 				int id = cursor.getInt(0);
-				list.add(new Project(id, cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
+				list.add(new ProjectModel(id, cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
 //				list.add(new Project(cursor.getInt(0), cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
 			}
 		}

@@ -15,12 +15,11 @@ public final class R {
     }
     public static final class id {
         public static final int addProject=0x7f070002;
-        public static final int addUpdateProject=0x7f070007;
-        public static final int addUpdateProjectTitle=0x7f070006;
-        public static final int client=0x7f070005;
+        public static final int addUpdateProject=0x7f070006;
+        public static final int addUpdateProjectTitle=0x7f070005;
+        public static final int client=0x7f070004;
         public static final int list=0x7f070001;
-        public static final int menu_settings=0x7f070008;
-        public static final int projectId=0x7f070004;
+        public static final int menu_settings=0x7f070007;
         public static final int projectName=0x7f070003;
         public static final int projectTitle=0x7f070000;
     }

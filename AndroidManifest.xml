@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.caritasdesigns.testpits.ProjectUpdate" />
+        <activity android:name="com.caritasdesigns.testpits.Project" />
         
     </application>
 
