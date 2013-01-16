@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
 <Button
-    android:id="@+id/addUpdateProject"
+    android:id="@+id/addUpdateTestpit"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
@@ -21,77 +21,24 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/addUpdateProjectTitle"
+        android:id="@+id/addUpdateTestpitTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/project_title_addUpdateProject"
+        android:text="addUpdateTestpit"
         android:textSize="25sp" />
 
     <EditText
-        android:id="@+id/projectName"
+        android:id="@+id/testpitName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/updateProject_name" />
-
-    <EditText
-        android:id="@+id/client"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Client" />
+        android:hint="Update Testpit Name" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/pad_height" >
-
-        <Button
-            android:id="@+id/viewTestpits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Test Pits: ##" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add A TP" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/pad_height" >
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Monitor Wells: ##" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add A MW" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -122,6 +69,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clear" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/pad_height" >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Horizons: ##" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add A Horizon" />
+
     </LinearLayout>
 
 </LinearLayout>

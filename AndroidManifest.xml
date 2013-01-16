@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.caritasdesigns.testpits.Project" />
+        <activity android:name="com.caritasdesigns.testpits.TestpitList" />
+        <activity android:name="com.caritasdesigns.testpits.Testpit" />
         
     </application>
 

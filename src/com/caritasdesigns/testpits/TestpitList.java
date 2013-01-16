@@ -18,27 +18,25 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class ProjectList extends Activity {
+public class TestpitList extends Activity {
 
-	private Button addProject;
+	private Button addTestpit;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
-	private List<ProjectModel> projectList;
+	private List<TestpitModel> testpitList;
 	private ListView list;
-	private ProjectAdapter adapter;
+	private TestpitAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);  
 		//Set View
-		setContentView(R.layout.activity_project);
+		setContentView(R.layout.activity_testpit);
 		
 		//Open Database
-		dbHelper = new DbHelper(ProjectList.this);
-//		db = dbHelper.getWritableDatabase();
-//		dbHelper.resetDB(db);
-		projectList = this.getProjectsFromDb();
-		adapter = new ProjectAdapter(this, R.layout.project_list_item, projectList);
+		dbHelper = new DbHelper(TestpitList.this);
+		testpitList = this.getTestpitsFromDb();
+		adapter = new TestpitAdapter(this, R.layout.testpit_list_item, testpitList);
 		list = (ListView)findViewById(R.id.list);
 		list.setAdapter(adapter);
 	
@@ -47,27 +45,25 @@ public class ProjectList extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				ProjectModel o = projectList.get(position);
-				Project.setMode(Mode.PROJECT_READ_MODE);
-				Project.setProjectID(o.getId());
-				Intent intent = new Intent(view.getContext(), Project.class);
+				TestpitModel t = testpitList.get(position);
+				Testpit.setMode(Mode.TESTPIT_READ_MODE);
+				Testpit.setTestpitID(t.getId());
+				Intent intent = new Intent(view.getContext(), Testpit.class);
 				view.getContext().startActivity(intent);
-				Log.d("ProjectAdd","onClick'd with addProjectButton: "+ R.id.addProject);	
+				Log.d("TestpitAdd","onClick'd with addTestpit: "+ R.id.addTestpit);
 			}
 			
 		});
 		
-		addProject = (Button) findViewById(R.id.addProject);
-		addProject.setOnClickListener(new OnClickListener() {
+		addTestpit = (Button) findViewById(R.id.addTestpit);
+		addTestpit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Project.setMode(Mode.PROJECT_CREATE_MODE);
-				Intent intent = new Intent(v.getContext(), Project.class);
+				Testpit.setMode(Mode.TESTPIT_CREATE_MODE);
+				Intent intent = new Intent(v.getContext(), Testpit.class);
 				v.getContext().startActivity(intent);
-				Log.d("ProjectAdd","onClick'd with addProjectButton: "+ R.id.addProject);
+				Log.d("TestpitAdd","onClick'd with addTestpitButton: "+ R.id.addTestpit);
 			}
-			
-			
 		});
 
 	//Close Database
@@ -78,11 +74,11 @@ public class ProjectList extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		projectList = this.getProjectsFromDb();
+		testpitList = this.getTestpitsFromDb();
 
-		adapter = new ProjectAdapter(this, R.layout.project_list_item, projectList);
+		adapter = new TestpitAdapter(this, R.layout.testpit_list_item, testpitList);
 		list.setAdapter(adapter);
-		Log.d("ProjectList","onResume is running" + adapter);
+		Log.d("TestpitList","onResume is running" + adapter);
 	}
 	
 	@Override
@@ -93,18 +89,17 @@ public class ProjectList extends Activity {
 	}
 	
 	
-	private List<ProjectModel> getProjectsFromDb(){
-		List<ProjectModel> list = new ArrayList<ProjectModel>();
+	private List<TestpitModel> getTestpitsFromDb(){
+		List<TestpitModel> list = new ArrayList<TestpitModel>();
 		db = dbHelper.getReadableDatabase();
-		String[] columns = new String[]{"_id","name","client"};
+		String[] columns = new String[]{"_id","name"};
 		
 		Cursor cursor = db.query(DbHelper.TABLE_PROJECTS, columns, null, null, null, null, null);
 		if(cursor.getCount() != 0){
 			while( cursor.moveToNext()) {
-				Log.d("AddToList","Item ID: "+ cursor.getInt(0));
+				Log.d("TPAddToList","Item ID: "+ cursor.getInt(0));
 				int id = cursor.getInt(0);
-				list.add(new ProjectModel(id, cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
-//				list.add(new Project(cursor.getInt(0), cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
+				list.add(new TestpitModel(id, cursor.getString(cursor.getColumnIndex("name"))));
 			}
 		}
 		return list;

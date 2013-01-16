@@ -3,6 +3,7 @@ package com.caritasdesigns.testpits;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -45,7 +46,6 @@ public class Project extends Activity{
 		this.projectReadMode();
 
 		button.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				
@@ -67,6 +67,16 @@ public class Project extends Activity{
 			}
 			
 			
+		});
+		
+		Button viewTestpits = (Button) findViewById(R.id.viewTestpits);
+		viewTestpits.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), TestpitList.class);
+				v.getContext().startActivity(intent);
+				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
+			}
 		});
 
 
@@ -90,11 +100,11 @@ public class Project extends Activity{
 		Log.d("insertProject","method insertProject is called");
 		//Create Content Values
 		ContentValues values = new ContentValues();
-		values.put(DbHelper.C_NAME, projectName.getText().toString());
-		values.put(DbHelper.C_CLIENT, client.getText().toString());
+		values.put(DbHelper.P_NAME, projectName.getText().toString());
+		values.put(DbHelper.P_CLIENT, client.getText().toString());
 		
 		//Insert into Database
-		db.insert(DbHelper.TABLE, null, values);
+		db.insert(DbHelper.TABLE_PROJECTS, null, values);
 		//Close Database
 		dbHelper.close();
 		db.close();
@@ -108,11 +118,11 @@ public class Project extends Activity{
 		Log.d("insertProject","method insertProject is called");
 		//Create Content Values
 		ContentValues values = new ContentValues();
-		values.put(DbHelper.C_NAME, projectName.getText().toString());
-		values.put(DbHelper.C_CLIENT, client.getText().toString());
+		values.put(DbHelper.P_NAME, projectName.getText().toString());
+		values.put(DbHelper.P_CLIENT, client.getText().toString());
 		
 		//Insert into Database
-		db.update(DbHelper.TABLE, values, DbHelper.C_ID+"="+projectID, null);
+		db.update(DbHelper.TABLE_PROJECTS, values, DbHelper.P_ID+"="+projectID, null);
 		//Close Database
 		dbHelper.close();
 		db.close();
@@ -130,7 +140,7 @@ public class Project extends Activity{
 		db = dbHelper.getReadableDatabase();
 		
 		String[] columns = new String[]{"name","client"};
-		Cursor cursor = db.query(DbHelper.TABLE, columns, DbHelper.C_ID+"="+projectID, null, null, null, null);
+		Cursor cursor = db.query(DbHelper.TABLE_PROJECTS, columns, DbHelper.P_ID+"="+projectID, null, null, null, null);
 		Log.d("PrePopVals","Count: "+cursor.getCount());
 		if(cursor.getCount()!=0){
 			cursor.moveToFirst();
