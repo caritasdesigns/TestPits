@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -88,6 +89,7 @@ public class Project extends Activity{
 					@Override
 					public void onClick(View v) {
 						Intent intent = new Intent(v.getContext(), TestpitList.class);
+						intent.putExtra("projectID", projectID);
 						v.getContext().startActivity(intent);
 						Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
 					}

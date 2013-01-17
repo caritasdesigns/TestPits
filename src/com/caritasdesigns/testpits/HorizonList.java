@@ -18,21 +18,21 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class TestpitList extends Activity {
+public class HorizonList extends Activity {
 
-	private Button addTestpit;
+	private Button addHorizon;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
-	private List<TestpitModel> testpitList;
+	private List<HorizonModel> horizonList;
 	private ListView list;
-	private TestpitAdapter adapter;
-	private String projectID;
+	private HorizonAdapter adapter;
+	private String testpitID;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);  
 		//Set View
-		setContentView(R.layout.activity_testpit);
+		setContentView(R.layout.activity_horizon);
 		
 		//Get Extras
 		Bundle extras = getIntent().getExtras();
@@ -40,13 +40,13 @@ public class TestpitList extends Activity {
 		    return;
 		    }
 		// Get data via the key
-		this.projectID = extras.getString("projectID");
-		Testpit.setProjectID(projectID);
+		this.testpitID = extras.getString("testpitID");
+		Horizon.setTestpitID(testpitID);
 		
 		//Open Database
-		dbHelper = new DbHelper(TestpitList.this);
-		testpitList = this.getTestpitsFromDb();
-		adapter = new TestpitAdapter(this, R.layout.testpit_list_item, testpitList);
+		dbHelper = new DbHelper(HorizonList.this);
+		horizonList = this.getHorizonsFromDb();
+		adapter = new HorizonAdapter(this, R.layout.horizon_list_item, horizonList);
 		list = (ListView)findViewById(R.id.list);
 		list.setAdapter(adapter);
 	
@@ -55,25 +55,24 @@ public class TestpitList extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				TestpitModel t = testpitList.get(position);
-				Testpit.setMode(Mode.TESTPIT_READ_MODE);
-				Testpit.setTestpitID(t.getId());
-				Intent intent = new Intent(view.getContext(), Testpit.class);
+				HorizonModel t = horizonList.get(position);
+				Horizon.setMode(Mode.HORIZON_READ_MODE);
+				Horizon.setHorizonID(t.getId());
+				Intent intent = new Intent(view.getContext(), Horizon.class);
 				view.getContext().startActivity(intent);
-				Log.d("TestpitAdd","onClick'd with addTestpit: "+ R.id.addTestpit);
+				Log.d("HorizonAdd","onClick'd with addHorizon: "+ R.id.addHorizon);
 			}
 			
 		});
 		
-		addTestpit = (Button) findViewById(R.id.addTestpit);
-		addTestpit.setOnClickListener(new OnClickListener() {
+		addHorizon = (Button) findViewById(R.id.addHorizon);
+		addHorizon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Testpit.setMode(Mode.TESTPIT_CREATE_MODE);
-				Testpit.setProjectID(projectID);
-				Intent intent = new Intent(v.getContext(), Testpit.class);
+				Horizon.setMode(Mode.HORIZON_CREATE_MODE);
+				Intent intent = new Intent(v.getContext(), Horizon.class);
 				v.getContext().startActivity(intent);
-				Log.d("TestpitAdd","onClick'd with addTestpitButton: "+ R.id.addTestpit);
+				Log.d("HorizonAdd","onClick'd with addHorizonButton: "+ R.id.addHorizon);
 			}
 		});
 
@@ -85,11 +84,11 @@ public class TestpitList extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		testpitList = this.getTestpitsFromDb();
+		horizonList = this.getHorizonsFromDb();
 
-		adapter = new TestpitAdapter(this, R.layout.testpit_list_item, testpitList);
+		adapter = new HorizonAdapter(this, R.layout.horizon_list_item, horizonList);
 		list.setAdapter(adapter);
-		Log.d("TestpitList","onResume is running" + adapter);
+		Log.d("HorizonList","onResume is running" + adapter);
 	}
 	
 	@Override
@@ -100,16 +99,17 @@ public class TestpitList extends Activity {
 	}
 	
 	
-	private List<TestpitModel> getTestpitsFromDb(){
-		List<TestpitModel> list = new ArrayList<TestpitModel>();
+	private List<HorizonModel> getHorizonsFromDb(){
+		List<HorizonModel> list = new ArrayList<HorizonModel>();
 		db = dbHelper.getReadableDatabase();
-		String[] columns = new String[]{"_id","project_id", "name"};
+		String[] columns = new String[]{"_id","testpit_id", "name"};
 		
-		Cursor cursor = db.query(DbHelper.TABLE_TESTPITS, columns, "project_id="+this.projectID, null, null, null, null);
+		Cursor cursor = db.query(DbHelper.TABLE_HORIZONS, columns, "testpit_id=" + testpitID, null, null, null, null);
 		if(cursor.getCount() != 0){
 			while( cursor.moveToNext()) {
+				Log.d("HAddToList","Item ID: "+ cursor.getInt(0));
 				int id = cursor.getInt(0);
-				list.add(new TestpitModel(id, cursor.getString(cursor.getColumnIndex("name"))));
+				list.add(new HorizonModel(id, cursor.getString(cursor.getColumnIndex("name"))));
 			}
 		}
 		return list;

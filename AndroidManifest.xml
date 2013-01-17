@@ -7,6 +7,12 @@
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="16" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+	<uses-feature
+		android:name="android.hardware.location"
+		android:required="false" /> -->
 
     <application
         android:allowBackup="true"
@@ -25,6 +31,8 @@
         <activity android:name="com.caritasdesigns.testpits.Project" />
         <activity android:name="com.caritasdesigns.testpits.TestpitList" />
         <activity android:name="com.caritasdesigns.testpits.Testpit" />
+        <activity android:name="com.caritasdesigns.testpits.HorizonList" />
+        <activity android:name="com.caritasdesigns.testpits.Horizon" />
         
     </application>
 

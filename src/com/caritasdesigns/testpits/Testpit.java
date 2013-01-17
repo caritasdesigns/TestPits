@@ -3,6 +3,7 @@ package com.caritasdesigns.testpits;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -19,53 +20,73 @@ import android.widget.EditText;
 public class Testpit extends Activity{
 
 	private static Mode testpitMode;
-	private Button button;
+	private Button button, insertTestpit;
 	private EditText testpitName;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
-	private static String testpitID;
+	private static String testpitID, projectID;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.testpit);
-
-		//Setup View
-		button = (Button) findViewById(R.id.addUpdateTestpit);
-		testpitName = (EditText) findViewById(R.id.testpitName);
-		
-		testpitName.setOnKeyListener(this.createOnKeyListener(testpitName));
-		
-		//Prepopulate the fields
-		this.prepopUpdateFields();
-		this.testpitReadMode();
-
-		button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				switch(testpitMode){
-					case TESTPIT_CREATE_MODE:
+		switch(testpitMode){
+			case TESTPIT_CREATE_MODE:
+				setContentView(R.layout.testpit_add);
+				insertTestpit = (Button) findViewById(R.id.insertTestpit);
+				testpitName = (EditText) findViewById(R.id.testpitName);
+				testpitName.setOnKeyListener(this.createOnKeyListener(testpitName));
+				insertTestpit.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
 						insertTestpit();
-						break;
-					case TESTPIT_UPDATE_MODE:
-						updateTestpit();
-						testpitReadMode();
-						break;
-					case TESTPIT_READ_MODE:
-						testpitUpdateMode();
-						break;
-					default:
-						Log.d("addUpdatetestpit","onClick'd issue with Mode: "+ testpitMode);
-						break;
-				}
-			}
-			
-			
-		});
+					}
+				});
+				break;
+			case TESTPIT_UPDATE_MODE:
+			case TESTPIT_READ_MODE:
+				setContentView(R.layout.testpit);
+				//Setup View
+				testpitName = (EditText) findViewById(R.id.testpitName);
+				testpitName.setOnKeyListener(this.createOnKeyListener(testpitName));
+				button = (Button) findViewById(R.id.addUpdateTestpit);
+				
+				//Prepopulate the fields
+				this.prepopUpdateFields();
+				this.testpitReadMode();		
 
-
+				button.setOnClickListener(new OnClickListener() {
+			
+					@Override
+					public void onClick(View v) {
+						switch(testpitMode){
+							case TESTPIT_CREATE_MODE:
+								insertTestpit();
+								break;
+							case TESTPIT_UPDATE_MODE:
+								updateTestpit();
+								testpitReadMode();
+								break;
+							case TESTPIT_READ_MODE:
+								testpitUpdateMode();
+								break;
+							default:
+								Log.d("addUpdatetestpit","onClick'd issue with Mode: "+ testpitMode);
+								break;
+						}
+					}
+				});
+				//View Horizons is Clicked
+				Button viewHorizons = (Button) findViewById(R.id.viewHorizons);
+				viewHorizons.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Log.d("viewHorizons","onClick'd with TestpitID: "+ testpitID);
+						Intent intent = new Intent(v.getContext(), HorizonList.class);
+						intent.putExtra("testpitID", testpitID);
+						v.getContext().startActivity(intent);
+					}
+				});
+		}
 	}
 
 	@Override
@@ -87,7 +108,7 @@ public class Testpit extends Activity{
 		//Create Content Values
 		ContentValues values = new ContentValues();
 		values.put(DbHelper.TP_NAME, testpitName.getText().toString());
-		
+		values.put(DbHelper.TP_PROJECTID, projectID);
 		//Insert into Database
 		db.insert(DbHelper.TABLE_TESTPITS, null, values);
 		//Close Database
@@ -115,7 +136,10 @@ public class Testpit extends Activity{
 	public static void setTestpitID(long id)
 	{
 		testpitID = String.valueOf(id);
-
+	}
+	public static void setProjectID(String id)
+	{
+		projectID = id;
 	}
 	
 	private void prepopUpdateFields()
