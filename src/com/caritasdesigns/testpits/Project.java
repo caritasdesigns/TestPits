@@ -20,10 +20,9 @@ import android.widget.EditText;
 public class Project extends Activity{
 
 	private static Mode projectMode;
-	private Button button;
+	private Button button, insertButton;
 	private EditText projectName;
 	private EditText client;
-	private EditText pid;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
 	private static String projectID;
@@ -31,55 +30,74 @@ public class Project extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.project);
-
-		//Setup View
-		button = (Button) findViewById(R.id.addUpdateProject);
-		projectName = (EditText) findViewById(R.id.projectName);
-		client = (EditText) findViewById(R.id.client);
-		
-		projectName.setOnKeyListener(this.createOnKeyListener(projectName));
-		client.setOnKeyListener(this.createOnKeyListener(client));
-		
-		//Prepopulate the fields
-		this.prepopUpdateFields();
-		this.projectReadMode();
-
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				
-				switch(projectMode){
-					case PROJECT_CREATE_MODE:
+		switch(projectMode){
+			case PROJECT_CREATE_MODE:
+				setContentView(R.layout.project_add);
+				insertButton = (Button) findViewById(R.id.insertProject);
+				projectName = (EditText) findViewById(R.id.projectName);
+				client = (EditText) findViewById(R.id.client);
+				projectName.setOnKeyListener(this.createOnKeyListener(projectName));
+				client.setOnKeyListener(this.createOnKeyListener(client));
+				insertButton.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
 						insertProject();
-						break;
-					case PROJECT_UPDATE_MODE:
-						updateProject();
-						projectReadMode();
-						break;
-					case PROJECT_READ_MODE:
-						projectUpdateMode();
-						break;
-					default:
-						Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
-						break;
-				}
-			}
-			
-			
-		});
-		
-		Button viewTestpits = (Button) findViewById(R.id.viewTestpits);
-		viewTestpits.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), TestpitList.class);
-				v.getContext().startActivity(intent);
-				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
-			}
-		});
+					}
+				});
+				break;
+			case PROJECT_UPDATE_MODE:
+			case PROJECT_READ_MODE:
+				setContentView(R.layout.project);
+				//Setup View
+				projectName = (EditText) findViewById(R.id.projectName);
+				client = (EditText) findViewById(R.id.client);
+				
+				projectName.setOnKeyListener(this.createOnKeyListener(projectName));
+				client.setOnKeyListener(this.createOnKeyListener(client));
+				button = (Button) findViewById(R.id.addUpdateProject);
+				
+				//Prepopulate the fields
+				this.prepopUpdateFields();
+				this.projectReadMode();		
 
 
+				button.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						
+						switch(projectMode){
+							case PROJECT_CREATE_MODE:
+								insertProject();
+								break;
+							case PROJECT_UPDATE_MODE:
+								updateProject();
+								projectReadMode();
+								break;
+							case PROJECT_READ_MODE:
+								projectUpdateMode();
+								break;
+							default:
+								Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
+								break;
+						}
+					}
+				});
+
+				Button viewTestpits = (Button) findViewById(R.id.viewTestpits);
+				viewTestpits.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(v.getContext(), TestpitList.class);
+						v.getContext().startActivity(intent);
+						Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
+					}
+				});
+
+				break;
+			default:
+				Log.d("ProjectLoadView","onClick'd issue with Mode: "+ projectMode);
+			break;
+		}
 	}
 
 	@Override
@@ -157,7 +175,7 @@ public class Project extends Activity{
 	
 	private void projectReadMode()
 	{		
-		button.setText("Edit");
+		this.button.setText("Edit");
 
 		projectMode = Mode.PROJECT_READ_MODE;
 		this.client.setFocusable(false);
