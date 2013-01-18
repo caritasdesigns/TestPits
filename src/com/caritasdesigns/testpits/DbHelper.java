@@ -20,15 +20,58 @@ public class DbHelper extends SQLiteOpenHelper {
 	//TABLE 'testpits' Variables
 	public static final String TABLE_TESTPITS = "testpits";
 	public static final String TP_ID = "_id"; //Special for ID
-	public static final String TP_PROJECTID = "project_id";
+	public static final String TP_PROJECTID = "projects_id";
 	public static final String TP_NAME = "name";
+	public static final String TP_DATE_C = "date_created";
+	public static final String TP_DATE_M = "date_modified";
+	public static final String TP_DESCRIBED_BY = "described_by";
+	public static final String TP_CONFIRMATION_NUMBER = "confirmation_number";
+	public static final String TP_SLOPE = "slope";
+	public static final String TP_VEGETATION = "vegetation";
+	public static final String TP_LANDUSE = "land_use";
+	public static final String TP_MWID = "monitor_wells_id";
 
-	//TABLE 'horizons' Variables
-	public static final String TABLE_HORIZONS = "horizons";
+	//TABLE 'tp_horizons' Variables
+	public static final String TABLE_HORIZONS = "tp_horizons";
 	public static final String H_ID = "_id"; //Special for ID
-	public static final String H_TESTPITID = "testpit_id";
-	public static final String H_NAME = "name";
+	public static final String H_TESTPITID = "testpits_id";
+	public static final String H_ORDER= "order";
+	public static final String H_DEPTH_S = "start_depth";
+	public static final String H_DEPTH_E = "end_depth";
+	public static final String H_COLOR = "color";
+	public static final String H_MOTTLES = "mottles";
+	public static final String H_TEXTURE = "texture";
+	public static final String H_STRUCTURE_G = "structure_g";
+	public static final String H_STRUCTURE_SH = "structure_sh";
+	public static final String H_STRUCTURE_S = "structure_s";
+	public static final String H_CONSISTENCE = "consistence";
+	public static final String H_BOUNDARY_D = "boundary_d";
+	public static final String H_BOUNDARY_T = "boundary_t";
+	public static final String H_ROOTS = "roots";
+	public static final String H_WATER = "water";
+	public static final String H_SOIL_RIBBON = "soil_ribbon";
+	public static final String H_COMMENTS = "comments";
 
+	//TABLE 'monitor_wells' Variables
+	public static final String TABLE_MONITORWELLS = "monitor_wells";
+	public static final String MW_ID = "_id"; //Special for ID
+	public static final String MW_PROJECTID = "projects_id";
+	public static final String MW_NAME = "name";
+	public static final String MW_DATE_INSTALLED = "date_installed";
+	public static final String MW_INSTALLED_BY = "installed_by";
+	public static final String MW_TWCL = "casing_length";
+	public static final String MW_AGCL = "casing_stub";
+	
+
+	//TABLE 'mw_measurements' Variables
+	public static final String TABLE_MEASUREMENTS = "mw_measurements";
+	public static final String M_ID = "_id"; //Special for ID
+	public static final String M_MWID = "monitors_well_id";
+	public static final String M_DATE = "date";
+	public static final String M_MEASUREMENT = "measurement";
+	public static final String M_MEASURED_BY = "measured_by";
+
+	
 	public DbHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
 	}
@@ -52,7 +95,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		//CREATE TABLE "horizons"
 		String horizons = String.format(
 				"create table %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER NOT NULL, %s TEXT)",
-				TABLE_HORIZONS, H_ID, H_TESTPITID, H_NAME
+				TABLE_HORIZONS, H_ID, H_TESTPITID, H_ORDER
 		);
 		db.execSQL(horizons);
 	}

@@ -63,10 +63,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
-            android:id="@+id/setGPS"
+            android:id="@+id/setLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Map" />
+            android:text="Set GPS to Current Location" />
     </LinearLayout>
 
 </LinearLayout>

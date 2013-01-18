@@ -1,129 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-<Button
-    android:id="@+id/addUpdateProject"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true"
-    android:text="Submit" />
-
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/addUpdateProjectTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/project_title_addUpdateProject"
-        android:textSize="25sp" />
-
-    <EditText
-        android:id="@+id/projectName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/updateProject_name" />
-
-    <EditText
-        android:id="@+id/client"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Client" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </RelativeLayout>
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/pad_height" >
-
-        <Button
-            android:id="@+id/viewTestpits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Test Pits: ##" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add A TP" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/pad_height" >
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Monitor Wells: ##" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add A MW" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp" >
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
+            android:id="@+id/addUpdateProjectTitle"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="GPS: "
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:gravity="center_horizontal"
+            android:text="@string/project_title_addUpdateProject"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/projectName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/updateProject_name" />
+
+        <EditText
+            android:id="@+id/client"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Client" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GPS: "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Button
+                android:id="@+id/mapLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map" />
+
+            <Button
+                android:id="@+id/updateLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update" />
+
+            <Button
+                android:id="@+id/clearLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pad_height" >
+
+            <Button
+                android:id="@+id/viewTestpits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Test Pits: ##" />
+
+            <Button
+                android:id="@+id/addTestpit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add A TP" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pad_height" >
+
+            <Button
+                android:id="@+id/viewMWs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Monitor Wells: ##" />
+
+            <Button
+                android:id="@+id/addMW"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add A MW" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
+            android:id="@+id/addUpdateProject"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Map" />
+            android:layout_weight="1"
+            android:text="Submit" />
 
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Update" />
-
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear" />
     </LinearLayout>
-
-</LinearLayout>
-
-</RelativeLayout>
+</ScrollView>

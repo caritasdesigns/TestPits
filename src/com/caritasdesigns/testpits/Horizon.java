@@ -95,7 +95,7 @@ public class Horizon extends Activity{
 		Log.d("inserthorizon","method inserthorizon is called");
 		//Create Content Values
 		ContentValues values = new ContentValues();
-		values.put(DbHelper.H_NAME, horizonName.getText().toString());
+		values.put(DbHelper.H_ORDER, horizonName.getText().toString());
 		values.put(DbHelper.H_TESTPITID, testpitID);
 		//Insert into Database
 		db.insert(DbHelper.TABLE_HORIZONS, null, values);
@@ -112,7 +112,7 @@ public class Horizon extends Activity{
 		Log.d("inserthorizon","method inserthorizon is called");
 		//Create Content Values
 		ContentValues values = new ContentValues();
-		values.put(DbHelper.H_NAME, horizonName.getText().toString());
+		values.put(DbHelper.H_ORDER, horizonName.getText().toString());
 		
 		//Insert into Database
 		db.update(DbHelper.TABLE_HORIZONS, values, DbHelper.H_ID+"="+horizonID, null);
