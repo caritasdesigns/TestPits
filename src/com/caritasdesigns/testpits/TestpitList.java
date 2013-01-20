@@ -57,10 +57,10 @@ public class TestpitList extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 				TestpitModel t = testpitList.get(position);
 				Testpit.setMode(Mode.TESTPIT_READ_MODE);
-				Testpit.setTestpitID(t.getId());
 				Intent intent = new Intent(view.getContext(), Testpit.class);
+				intent.putExtra("testpitID", Integer.toString(t.getId()));
 				view.getContext().startActivity(intent);
-				Log.d("TestpitAdd","onClick'd with addTestpit: "+ R.id.addTestpit);
+				Log.d("TestpitAdd","onClick'd with readTestpit: "+ t.getId());
 			}
 			
 		});
@@ -70,8 +70,8 @@ public class TestpitList extends Activity {
 			@Override
 			public void onClick(View v) {
 				Testpit.setMode(Mode.TESTPIT_CREATE_MODE);
-				Testpit.setProjectID(projectID);
 				Intent intent = new Intent(v.getContext(), Testpit.class);
+				intent.putExtra("projectID", projectID);
 				v.getContext().startActivity(intent);
 				Log.d("TestpitAdd","onClick'd with addTestpitButton: "+ R.id.addTestpit);
 			}
@@ -103,13 +103,13 @@ public class TestpitList extends Activity {
 	private List<TestpitModel> getTestpitsFromDb(){
 		List<TestpitModel> list = new ArrayList<TestpitModel>();
 		db = dbHelper.getReadableDatabase();
-		String[] columns = new String[]{"_id","project_id", "name"};
+		String[] columns = new String[]{DbHelper.TP_ID,DbHelper.TP_PROJECTID, DbHelper.TP_NAME};
 		
-		Cursor cursor = db.query(DbHelper.TABLE_TESTPITS, columns, "project_id="+this.projectID, null, null, null, null);
+		Cursor cursor = db.query(DbHelper.TABLE_TESTPITS, columns, DbHelper.TP_PROJECTID+"="+this.projectID, null, null, null, null);
 		if(cursor.getCount() != 0){
 			while( cursor.moveToNext()) {
 				int id = cursor.getInt(0);
-				list.add(new TestpitModel(id, cursor.getString(cursor.getColumnIndex("name"))));
+				list.add(new TestpitModel(id, cursor.getString(cursor.getColumnIndex(DbHelper.TP_NAME))));
 			}
 		}
 		return list;

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -17,13 +16,14 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 public class Project extends Activity{
 
 	private static Mode projectMode;
-	private Button button, insertButton;
-	private EditText projectName;
-	private EditText client;
+	private Button button, viewTestpits, addTestpit, viewMWs, addMW, clearLocation, setLocation, mapLocation;
+	private LinearLayout testpitButtonGroup, MWButtonGroup;
+	private EditText projectName, client;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
 	private static String projectID;
@@ -31,75 +31,35 @@ public class Project extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.project);
+		clearLocation = (Button) findViewById(R.id.clearLocation);
+		setLocation = (Button) findViewById(R.id.setLocation);
+		mapLocation = (Button) findViewById(R.id.mapLocation);
+		testpitButtonGroup = (LinearLayout) findViewById(R.id.testpitsButtonGroup);
+		MWButtonGroup = (LinearLayout) findViewById(R.id.MWButtonGroup);
+		button = (Button) findViewById(R.id.addUpdateProject);
+		projectName = (EditText) findViewById(R.id.projectName);
+		client = (EditText) findViewById(R.id.client);
+		projectName.setOnKeyListener(this.createOnKeyListener(projectName));
+		client.setOnKeyListener(this.createOnKeyListener(client));
+
 		switch(projectMode){
 			case PROJECT_CREATE_MODE:
-				setContentView(R.layout.project_add);
-				insertButton = (Button) findViewById(R.id.insertProject);
-				projectName = (EditText) findViewById(R.id.projectName);
-				client = (EditText) findViewById(R.id.client);
-				projectName.setOnKeyListener(this.createOnKeyListener(projectName));
-				client.setOnKeyListener(this.createOnKeyListener(client));
-				insertButton.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						insertProject();
-					}
-				});
+				//Hide some fields
+				this.projectCreateMode();
 				break;
 			case PROJECT_UPDATE_MODE:
 			case PROJECT_READ_MODE:
-				setContentView(R.layout.project);
-				//Setup View
-				projectName = (EditText) findViewById(R.id.projectName);
-				client = (EditText) findViewById(R.id.client);
-				
-				projectName.setOnKeyListener(this.createOnKeyListener(projectName));
-				client.setOnKeyListener(this.createOnKeyListener(client));
-				button = (Button) findViewById(R.id.addUpdateProject);
-				
 				//Prepopulate the fields
 				this.prepopUpdateFields();
+				//Set the Mode
 				this.projectReadMode();		
-
-
-				button.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						
-						switch(projectMode){
-							case PROJECT_CREATE_MODE:
-								insertProject();
-								break;
-							case PROJECT_UPDATE_MODE:
-								updateProject();
-								projectReadMode();
-								break;
-							case PROJECT_READ_MODE:
-								projectUpdateMode();
-								break;
-							default:
-								Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
-								break;
-						}
-					}
-				});
-
-				Button viewTestpits = (Button) findViewById(R.id.viewTestpits);
-				viewTestpits.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(v.getContext(), TestpitList.class);
-						intent.putExtra("projectID", projectID);
-						v.getContext().startActivity(intent);
-						Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
-					}
-				});
-
 				break;
 			default:
 				Log.d("ProjectLoadView","onClick'd issue with Mode: "+ projectMode);
 			break;
 		}
+		this.setOnClickListeners();
 	}
 
 	@Override
@@ -123,12 +83,14 @@ public class Project extends Activity{
 		values.put(DbHelper.P_NAME, projectName.getText().toString());
 		values.put(DbHelper.P_CLIENT, client.getText().toString());
 		
-		//Insert into Database
-		db.insert(DbHelper.TABLE_PROJECTS, null, values);
+		//Insert into Database  (returns -1 if error, else projectID)
+		projectID = Long.toString(db.insert(DbHelper.TABLE_PROJECTS, null, values));
 		//Close Database
 		dbHelper.close();
 		db.close();
-		finish();
+        hideKeyboard(projectName);
+        hideKeyboard(client);
+		this.projectReadMode();
 	}
 
 	private void updateProject(){
@@ -145,7 +107,7 @@ public class Project extends Activity{
 		db.update(DbHelper.TABLE_PROJECTS, values, DbHelper.P_ID+"="+projectID, null);
 		//Close Database
 		dbHelper.close();
-		db.close();
+		db.close();	
 	}
 
 	public static void setProjectID(long id)
@@ -175,11 +137,20 @@ public class Project extends Activity{
 		db.close();	
 	}
 	
+	private void projectCreateMode()
+	{	
+		projectMode = Mode.PROJECT_CREATE_MODE;	
+		this.button.setText("Add Project");
+		this.setLocation.setText("Set Location");
+		this.setButtonVisibility();
+	}
+	
 	private void projectReadMode()
 	{		
 		this.button.setText("Edit");
 
 		projectMode = Mode.PROJECT_READ_MODE;
+		this.setButtonVisibility();
 		this.client.setFocusable(false);
 		this.client.setFocusableInTouchMode(false);
 		this.client.setEnabled(false);
@@ -192,13 +163,34 @@ public class Project extends Activity{
 	{
 		button.setText("Okay");
 		projectMode = Mode.PROJECT_UPDATE_MODE;
-
+		this.setButtonVisibility();
 		this.client.setEnabled(true);
 		this.client.setFocusable(true);
 		this.client.setFocusableInTouchMode(true);
 		this.projectName.setEnabled(true);
 		this.projectName.setFocusable(true);
 		this.projectName.setFocusableInTouchMode(true);
+	}
+	
+	private void setButtonVisibility(){
+		switch(projectMode){
+			case PROJECT_CREATE_MODE:
+				this.clearLocation.setVisibility(View.GONE);
+				this.mapLocation.setVisibility(View.GONE);
+				this.testpitButtonGroup.setVisibility(View.GONE);
+				this.MWButtonGroup.setVisibility(View.GONE);
+				break;
+			case PROJECT_UPDATE_MODE:
+			case PROJECT_READ_MODE:
+				this.clearLocation.setVisibility(View.VISIBLE);
+				this.mapLocation.setVisibility(View.VISIBLE);
+				this.testpitButtonGroup.setVisibility(View.VISIBLE);
+				this.MWButtonGroup.setVisibility(View.VISIBLE);
+				break;
+			default:
+				Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
+				break;
+		}
 	}
 	
 	private OnKeyListener createOnKeyListener(final EditText editText)
@@ -229,5 +221,78 @@ public class Project extends Activity{
 		InputMethodManager imm = (InputMethodManager)getSystemService(
 			      Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+	}
+	
+	private void setOnClickListeners(){
+		//Listen for the button click.
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				switch(projectMode){
+					case PROJECT_CREATE_MODE:
+						insertProject();
+						break;
+					case PROJECT_UPDATE_MODE:
+						updateProject();
+						projectReadMode();
+						break;
+					case PROJECT_READ_MODE:
+						projectUpdateMode();
+						break;
+					default:
+						Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
+						break;
+				}
+			}
+		});
+		//Set OnClick Listener for "View Testpits" button
+		viewTestpits = (Button) findViewById(R.id.viewTestpits);
+		viewTestpits.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), TestpitList.class);
+				intent.putExtra("projectID", projectID);
+				Log.d("putExtra","added intent.putExtra: 'projectID' = "+ projectID);
+				v.getContext().startActivity(intent);
+				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
+			}
+		});
+		//Set OnClick Listener for "Add Testpit" button
+		addTestpit = (Button) findViewById(R.id.addTestpit);
+		addTestpit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), Testpit.class);
+				intent.putExtra("projectID", projectID);
+				Log.d("putExtra","added intent.putExtra: 'projectID' = "+ projectID);
+				Testpit.setMode(Mode.TESTPIT_CREATE_MODE);
+				v.getContext().startActivity(intent);
+				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.addTestpit);
+			}
+		});
+		//Set OnClick Listener for "View Monitor Wells" button
+		viewMWs = (Button) findViewById(R.id.viewMWs);
+		viewMWs.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), TestpitList.class);
+				intent.putExtra("MWID", projectID);
+				v.getContext().startActivity(intent);
+				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.viewTestpits);
+			}
+		});
+		//Set OnClick Listener for "Add Monitor Well" button
+		addMW = (Button) findViewById(R.id.addMW);
+		addMW.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), Testpit.class);
+				intent.putExtra("MWID", projectID);
+				Testpit.setMode(Mode.TESTPIT_CREATE_MODE);
+				v.getContext().startActivity(intent);
+				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.addTestpit);
+			}
+		});
 	}
 }

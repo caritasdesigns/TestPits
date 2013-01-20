@@ -11,14 +11,20 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 	public static final String DB_NAME = "testpits.db";
 	public static final int DB_VERSION = 1;
-	//TABLE 'projects' Variables
+
+	//Setup Tables
 	public static final String TABLE_PROJECTS = "projects";
+	public static final String TABLE_TESTPITS = "testpits";
+	public static final String TABLE_HORIZONS = "tp_horizons";
+	public static final String TABLE_MONITORWELLS = "monitor_wells";
+	public static final String TABLE_MEASUREMENTS = "mw_measurements";
+	
+	//TABLE 'projects' Variables	
 	public static final String P_ID = "_id"; //Special for ID
 	public static final String P_NAME = "name";
 	public static final String P_CLIENT = "client";
 
 	//TABLE 'testpits' Variables
-	public static final String TABLE_TESTPITS = "testpits";
 	public static final String TP_ID = "_id"; //Special for ID
 	public static final String TP_PROJECTID = "projects_id";
 	public static final String TP_NAME = "name";
@@ -32,10 +38,9 @@ public class DbHelper extends SQLiteOpenHelper {
 	public static final String TP_MWID = "monitor_wells_id";
 
 	//TABLE 'tp_horizons' Variables
-	public static final String TABLE_HORIZONS = "tp_horizons";
 	public static final String H_ID = "_id"; //Special for ID
 	public static final String H_TESTPITID = "testpits_id";
-	public static final String H_ORDER= "order";
+	public static final String H_ORDER= "h_order";
 	public static final String H_DEPTH_S = "start_depth";
 	public static final String H_DEPTH_E = "end_depth";
 	public static final String H_COLOR = "color";
@@ -53,7 +58,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	public static final String H_COMMENTS = "comments";
 
 	//TABLE 'monitor_wells' Variables
-	public static final String TABLE_MONITORWELLS = "monitor_wells";
 	public static final String MW_ID = "_id"; //Special for ID
 	public static final String MW_PROJECTID = "projects_id";
 	public static final String MW_NAME = "name";
@@ -64,7 +68,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 
 	//TABLE 'mw_measurements' Variables
-	public static final String TABLE_MEASUREMENTS = "mw_measurements";
 	public static final String M_ID = "_id"; //Special for ID
 	public static final String M_MWID = "monitors_well_id";
 	public static final String M_DATE = "date";
@@ -94,7 +97,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 		//CREATE TABLE "horizons"
 		String horizons = String.format(
-				"create table %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER NOT NULL, %s TEXT)",
+				"create table %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER NOT NULL, %s INTEGER NOT NULL)",
 				TABLE_HORIZONS, H_ID, H_TESTPITID, H_ORDER
 		);
 		db.execSQL(horizons);

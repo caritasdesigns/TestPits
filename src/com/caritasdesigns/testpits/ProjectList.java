@@ -96,15 +96,14 @@ public class ProjectList extends Activity {
 	private List<ProjectModel> getProjectsFromDb(){
 		List<ProjectModel> list = new ArrayList<ProjectModel>();
 		db = dbHelper.getReadableDatabase();
-		String[] columns = new String[]{"_id","name","client"};
+		String[] columns = new String[]{DbHelper.P_ID,DbHelper.P_NAME,DbHelper.P_CLIENT};
 		
 		Cursor cursor = db.query(DbHelper.TABLE_PROJECTS, columns, null, null, null, null, null);
 		if(cursor.getCount() != 0){
 			while( cursor.moveToNext()) {
 				Log.d("AddToList","Item ID: "+ cursor.getInt(0));
 				int id = cursor.getInt(0);
-				list.add(new ProjectModel(id, cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
-//				list.add(new Project(cursor.getInt(0), cursor.getString(cursor.getColumnIndex("name")),cursor.getString(cursor.getColumnIndex("client"))));
+				list.add(new ProjectModel(id, cursor.getString(cursor.getColumnIndex(DbHelper.P_NAME)),cursor.getString(cursor.getColumnIndex(DbHelper.P_CLIENT))));
 			}
 		}
 		return list;

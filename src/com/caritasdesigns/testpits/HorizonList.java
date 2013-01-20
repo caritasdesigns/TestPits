@@ -41,6 +41,7 @@ public class HorizonList extends Activity {
 		    }
 		// Get data via the key
 		this.testpitID = extras.getString("testpitID");
+		Log.d("getExtras",": 'testpitID' = "+ testpitID);
 		Horizon.setTestpitID(testpitID);
 		
 		//Open Database
@@ -55,10 +56,10 @@ public class HorizonList extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				HorizonModel t = horizonList.get(position);
+				HorizonModel h = horizonList.get(position);
 				Horizon.setMode(Mode.HORIZON_READ_MODE);
-				Horizon.setHorizonID(t.getId());
 				Intent intent = new Intent(view.getContext(), Horizon.class);
+				intent.putExtra("horizonID",Integer.toString(h.getId()));
 				view.getContext().startActivity(intent);
 				Log.d("HorizonAdd","onClick'd with addHorizon: "+ R.id.addHorizon);
 			}
@@ -71,6 +72,8 @@ public class HorizonList extends Activity {
 			public void onClick(View v) {
 				Horizon.setMode(Mode.HORIZON_CREATE_MODE);
 				Intent intent = new Intent(v.getContext(), Horizon.class);
+				intent.putExtra("testpitID", testpitID);
+				Log.d("putExtra","added intent.putExtra: 'testpitID' = "+ testpitID);
 				v.getContext().startActivity(intent);
 				Log.d("HorizonAdd","onClick'd with addHorizonButton: "+ R.id.addHorizon);
 			}
@@ -102,14 +105,14 @@ public class HorizonList extends Activity {
 	private List<HorizonModel> getHorizonsFromDb(){
 		List<HorizonModel> list = new ArrayList<HorizonModel>();
 		db = dbHelper.getReadableDatabase();
-		String[] columns = new String[]{"_id","testpit_id", "name"};
+		String[] columns = new String[]{DbHelper.H_ID,DbHelper.H_TESTPITID, DbHelper.H_ORDER};
 		
-		Cursor cursor = db.query(DbHelper.TABLE_HORIZONS, columns, "testpit_id=" + testpitID, null, null, null, null);
+		Cursor cursor = db.query(DbHelper.TABLE_HORIZONS, columns, DbHelper.H_TESTPITID + "=" + testpitID, null, null, null, null);
 		if(cursor.getCount() != 0){
 			while( cursor.moveToNext()) {
 				Log.d("HAddToList","Item ID: "+ cursor.getInt(0));
 				int id = cursor.getInt(0);
-				list.add(new HorizonModel(id, cursor.getString(cursor.getColumnIndex("name"))));
+				list.add(new HorizonModel(id, cursor.getString(cursor.getColumnIndex(DbHelper.H_ORDER))));
 			}
 		}
 		return list;
