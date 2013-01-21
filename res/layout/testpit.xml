@@ -1,25 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-<Button
-    android:id="@+id/addUpdateTestpit"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true"
-    android:text="Submit" />
-
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:orientation="vertical" >
-
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/testpits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
     <TextView
         android:id="@+id/addUpdateTestpitTitle"
         android:layout_width="fill_parent"
@@ -38,6 +27,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
     </RelativeLayout>
 
     <LinearLayout
@@ -69,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clear" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -91,7 +82,14 @@
             android:text="Add A Horizon" />
 
     </LinearLayout>
-
+<Button
+    android:id="@+id/addUpdateTestpit"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Submit" />
+    
 </LinearLayout>
 
-</RelativeLayout>
+
+
+</ScrollView>

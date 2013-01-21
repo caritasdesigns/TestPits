@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -21,8 +23,8 @@ import android.widget.LinearLayout;
 public class Project extends Activity{
 
 	private static Mode projectMode;
-	private Button button, viewTestpits, addTestpit, viewMWs, addMW, clearLocation, setLocation, mapLocation;
-	private LinearLayout testpitButtonGroup, MWButtonGroup;
+	private Button button, viewTestpits, addTestpit, viewMWs, addMW, clearLocation, setLocation, mapLocation, viewPictures, addPicture;
+	private LinearLayout testpitButtonGroup, MWButtonGroup, pictureButtonGroup;
 	private EditText projectName, client;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
@@ -37,12 +39,12 @@ public class Project extends Activity{
 		mapLocation = (Button) findViewById(R.id.mapLocation);
 		testpitButtonGroup = (LinearLayout) findViewById(R.id.testpitsButtonGroup);
 		MWButtonGroup = (LinearLayout) findViewById(R.id.MWButtonGroup);
+		pictureButtonGroup = (LinearLayout) findViewById(R.id.pictureButtonGroup);
 		button = (Button) findViewById(R.id.addUpdateProject);
 		projectName = (EditText) findViewById(R.id.projectName);
 		client = (EditText) findViewById(R.id.client);
 		projectName.setOnKeyListener(this.createOnKeyListener(projectName));
-		client.setOnKeyListener(this.createOnKeyListener(client));
-
+		client.setOnKeyListener(this.createOnKeyListener(client));		
 		switch(projectMode){
 			case PROJECT_CREATE_MODE:
 				//Hide some fields
@@ -59,6 +61,7 @@ public class Project extends Activity{
 				Log.d("ProjectLoadView","onClick'd issue with Mode: "+ projectMode);
 			break;
 		}
+		//Set OnClickListeners
 		this.setOnClickListeners();
 	}
 
@@ -179,6 +182,7 @@ public class Project extends Activity{
 				this.mapLocation.setVisibility(View.GONE);
 				this.testpitButtonGroup.setVisibility(View.GONE);
 				this.MWButtonGroup.setVisibility(View.GONE);
+				this.pictureButtonGroup.setVisibility(View.GONE);
 				break;
 			case PROJECT_UPDATE_MODE:
 			case PROJECT_READ_MODE:
@@ -186,6 +190,7 @@ public class Project extends Activity{
 				this.mapLocation.setVisibility(View.VISIBLE);
 				this.testpitButtonGroup.setVisibility(View.VISIBLE);
 				this.MWButtonGroup.setVisibility(View.VISIBLE);
+				this.pictureButtonGroup.setVisibility(View.VISIBLE);
 				break;
 			default:
 				Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
@@ -294,5 +299,8 @@ public class Project extends Activity{
 				Log.d("viewTestpit","onClick'd with viewTestpitButton: "+ R.id.addTestpit);
 			}
 		});
+		
+		//Set OnClick Listener for "Add Pictures" button
+		addPicture = (Button) findViewById(R.id.addPicture);
 	}
 }

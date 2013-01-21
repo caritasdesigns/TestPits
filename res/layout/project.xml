@@ -102,6 +102,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Add A MW" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pictureButtonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pad_height" >
+
+            <Button
+                android:id="@+id/viewPictures"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pictures: ##" />
+
+            <Button
+                android:id="@+id/addPicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add a Picture" />
         </LinearLayout>
 
         <Button
