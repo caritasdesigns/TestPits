@@ -18,6 +18,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 public class ProjectList extends Activity {
 
 	private Button addProject;
@@ -32,6 +35,11 @@ public class ProjectList extends Activity {
 		super.onCreate(savedInstanceState);  
 		//Set View
 		setContentView(R.layout.activity_project);
+		//Set ImageLoader Configuration
+		 ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+		 .build();
+		 ImageLoader.getInstance().init(config);
+		
 		
 		//Open Database
 		dbHelper = new DbHelper(ProjectList.this);

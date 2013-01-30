@@ -48,18 +48,24 @@
         android:paddingTop="@dimen/pad_height" >
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/takePicture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pictures: ##" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add A Picture" />
+            android:text="Take Picture" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
 </LinearLayout>
 

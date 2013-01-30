@@ -18,6 +18,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	public static final String TABLE_HORIZONS = "tp_horizons";
 	public static final String TABLE_MONITORWELLS = "monitor_wells";
 	public static final String TABLE_MEASUREMENTS = "mw_measurements";
+	public static final String TABLE_PICTURES = "pictures";
+	public static final String TABLE_LOCATIONS = "locations";
 	
 	//TABLE 'projects' Variables	
 	public static final String P_ID = "_id"; //Special for ID
@@ -36,6 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	public static final String TP_VEGETATION = "vegetation";
 	public static final String TP_LANDUSE = "land_use";
 	public static final String TP_MWID = "monitor_wells_id";
+	public static final String TP_IS_LINKED_TO_MW = "is_linked_to_mw";
 
 	//TABLE 'tp_horizons' Variables
 	public static final String H_ID = "_id"; //Special for ID
@@ -74,6 +77,18 @@ public class DbHelper extends SQLiteOpenHelper {
 	public static final String M_MEASUREMENT = "measurement";
 	public static final String M_MEASURED_BY = "measured_by";
 
+
+	//TABLE 'pictures' Variables
+	public static final String PIC_ID = "_id"; //Special for ID
+	public static final String PIC_TYPE = "type";
+	public static final String PIC_TYPEID = "type_id";
+	public static final String PIC_LOCATION = "path";
+	
+
+	//TABLE 'mw_measurements' Variables
+	public static final String LOC_ID = "_id"; //Special for ID
+	public static final String LOC_TYPE = "type";
+	public static final String LOC_INFO = "information";
 	
 	public DbHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
@@ -101,6 +116,21 @@ public class DbHelper extends SQLiteOpenHelper {
 				TABLE_HORIZONS, H_ID, H_TESTPITID, H_ORDER
 		);
 		db.execSQL(horizons);
+
+		//CREATE TABLE "pictures"
+		String pictures = String.format(
+				"create table %s (%s INTEGER PRIMARY KEY, %s TEXT NOT NULL, %s INTEGER NOT NULL, %s TEXT NOT NULL)",
+				TABLE_PICTURES, PIC_ID, PIC_TYPE, PIC_TYPEID, PIC_LOCATION
+		);
+		db.execSQL(pictures);
+		
+		//CREATE TABLE "locations"
+		String locations = String.format(
+				"create table %s (%s INTEGER PRIMARY KEY, %s TEXT NOT NULL, %s TEXT NOT NULL)",
+				TABLE_LOCATIONS, LOC_ID, LOC_TYPE, LOC_INFO
+		);
+		db.execSQL(locations);
+		
 	}
 
 	@Override

@@ -58,6 +58,7 @@ public class TestpitList extends Activity {
 				TestpitModel t = testpitList.get(position);
 				Testpit.setMode(Mode.TESTPIT_READ_MODE);
 				Intent intent = new Intent(view.getContext(), Testpit.class);
+				intent.putExtra("projectID", projectID);
 				intent.putExtra("testpitID", Integer.toString(t.getId()));
 				view.getContext().startActivity(intent);
 				Log.d("TestpitAdd","onClick'd with readTestpit: "+ t.getId());

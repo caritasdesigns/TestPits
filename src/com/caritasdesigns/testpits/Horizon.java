@@ -1,10 +1,21 @@
 package com.caritasdesigns.testpits;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,21 +26,29 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class Horizon extends Activity{
 
 	private static Mode horizonMode;
-	private Button button;
+	private Button button, takePicture;
 	private LinearLayout pictureButtonGroup;
 	private EditText horizonName;
+	private String currentImagePath; 
+	private ImageView imageView;
+	private String images;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
-	private static String horizonID, testpitID;
+	private static String horizonID, testpitID, projectID;
+	private final static int  cameraData = 0;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.horizon);
 		//Get Extras
 		Bundle extras = getIntent().getExtras();
@@ -41,12 +60,17 @@ public class Horizon extends Activity{
 		Horizon.setTestpitID(testpitID);
 		horizonID = extras.getString("horizonID");
 		Horizon.setHorizonID(horizonID);
+		projectID = extras.getString("projectID");
+		Horizon.setProjectID(projectID);
+		
 		
 		
 		this.horizonName = (EditText) findViewById(R.id.horizonName);
 		this.horizonName.setOnKeyListener(this.createOnKeyListener(horizonName));
 		this.button = (Button) findViewById(R.id.addUpdateHorizon);
 		this.pictureButtonGroup = (LinearLayout) findViewById(R.id.pictureButtonGroup);
+		this.takePicture = (Button) findViewById(R.id.takePicture);
+		this.imageView = (ImageView) findViewById(R.id.imageView1);
 		
 		switch(horizonMode){
 			case HORIZON_CREATE_MODE:
@@ -110,6 +134,10 @@ public class Horizon extends Activity{
 	{
 		horizonID = id;
 
+	}
+	public static void setProjectID(String id)
+	{
+		projectID = id;
 	}
 	public static void setTestpitID(String id)
 	{
@@ -209,6 +237,11 @@ public class Horizon extends Activity{
 			imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 	}
 	
+	private void populateGallery(){
+		
+	}
+	
+	
 	private void setOnClickListeners(){
 		button.setOnClickListener(new OnClickListener() {
 			@Override
@@ -230,6 +263,96 @@ public class Horizon extends Activity{
 				}
 			}
 		});
+		
+		takePicture.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				//dispatchTakePictureIntent();
+				startActivityForResult(new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), cameraData);
+			}
+			
+		});
 
+//		private void dispatchTakePictureIntent(int actionCode) {
+//		    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//		    startActivityForResult(takePictureIntent, actionCode);
+//		}
+		
 	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == RESULT_OK)
+		{
+			Bundle extras = data.getExtras();
+			Bitmap bmp = (Bitmap) extras.get("data");
+		    String imageFileName = "H_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png";
+			
+			ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+			
+			
+			File internalStorageDir = contextWrapper.getDir("Images", Context.MODE_PRIVATE);
+			File hPicture = new File(internalStorageDir, imageFileName);
+			
+			//Create the image directory if id does not exist
+			if (!internalStorageDir.exists()) 
+			{
+				internalStorageDir.mkdirs();
+			}
+			
+		    try
+		    {
+		    	//Write the image to the file
+		    	FileOutputStream fos = new FileOutputStream(hPicture);
+				bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+				fos.flush();
+				fos.close();
+		    	Log.d("FileName",hPicture.toString());
+		    }
+		    catch(IOException e)
+		    {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		    }
+		    
+		    //Insert the image into the DB
+			insertImageDB(imageFileName);
+		}
+	}
+	
+	
+	private void insertImageDB(String fileName){
+		//Open Database
+		dbHelper = new DbHelper(Horizon.this);
+		db = dbHelper.getWritableDatabase();
+		Log.d("insertpicture","method insertImageDB is called");
+		
+		//Create Content Values
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.PIC_TYPE, "H");
+		values.put(DbHelper.PIC_TYPEID, horizonID);
+		values.put(DbHelper.PIC_LOCATION, fileName);
+		//TODO: Insert into Database  (returns -1 if error, else horizonID)
+		db.insert(DbHelper.TABLE_PICTURES, null, values);
+		//Close Database
+		dbHelper.close();
+		db.close();
+	}
+	
+	private String loadImagesFromDB(){
+		db = dbHelper.getReadableDatabase();
+		String[] columns = new String[]{DbHelper.PIC_ID,DbHelper.PIC_TYPE, DbHelper.PIC_TYPEID, DbHelper.PIC_LOCATION};
+		Cursor cursor = db.query(DbHelper.TABLE_PICTURES, columns, DbHelper.PIC_TYPE+"='H' AND "+DbHelper.PIC_TYPEID+"="+this.horizonID, null, null, null, null);
+		if(cursor.getCount() != 0){
+			cursor.moveToFirst();
+			images = cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION));
+/*			while( cursor.moveToNext()) {
+				images.add(cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION)));
+			}*/
+		}
+		return images;
+	}
+	
 }
