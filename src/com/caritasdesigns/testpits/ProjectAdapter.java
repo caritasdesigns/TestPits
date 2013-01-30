@@ -19,15 +19,15 @@ public class ProjectAdapter extends ArrayAdapter<ProjectModel> {
 	
 	public ProjectAdapter(Context context, int layoutResourceID, List<ProjectModel> projects){
 		super(context, layoutResourceID, projects);
-		Log.d("ProjectAdapter","Beginning of Constructor");
 		this.layoutResourceID = layoutResourceID;
         this.context = context;
         this.projects = projects;
 	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.d("ProjectAdapter","Beginning of getView");
-	    ProjectHolder holder;
+
+		ProjectHolder holder;
 		View row = convertView;
 		ProjectModel project = projects.get(position);
 		

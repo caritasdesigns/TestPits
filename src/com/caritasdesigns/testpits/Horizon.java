@@ -1,11 +1,12 @@
 package com.caritasdesigns.testpits;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -15,7 +16,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,9 +26,9 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
 
 public class Horizon extends Activity{
 
@@ -36,9 +36,9 @@ public class Horizon extends Activity{
 	private Button button, takePicture;
 	private LinearLayout pictureButtonGroup;
 	private EditText horizonName;
-	private String currentImagePath; 
-	private ImageView imageView;
-	private String images;
+	private GridView imageGallery;
+	private List<ImageModel> imageList;
+	private ImageAdapter adapter;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
 	private static String horizonID, testpitID, projectID;
@@ -70,7 +70,7 @@ public class Horizon extends Activity{
 		this.button = (Button) findViewById(R.id.addUpdateHorizon);
 		this.pictureButtonGroup = (LinearLayout) findViewById(R.id.pictureButtonGroup);
 		this.takePicture = (Button) findViewById(R.id.takePicture);
-		this.imageView = (ImageView) findViewById(R.id.imageView1);
+		this.imageGallery = (GridView) findViewById(R.id.hImageGallery);
 		
 		switch(horizonMode){
 			case HORIZON_CREATE_MODE:
@@ -80,7 +80,11 @@ public class Horizon extends Activity{
 			case HORIZON_READ_MODE:
 				//Prepopulate the fields
 				this.prepopUpdateFields();
-				this.horizonReadMode();		
+				this.horizonReadMode();	
+				this.imageList = loadImagesFromDB();
+				adapter = new ImageAdapter(this, imageList);
+				imageGallery.setAdapter(adapter);
+				break;
 		}
 		this.setOnClickListeners();
 	}
@@ -150,8 +154,6 @@ public class Horizon extends Activity{
 		
 		String[] columns = new String[]{DbHelper.H_ID,DbHelper.H_ORDER};
 		Cursor cursor = db.query(DbHelper.TABLE_HORIZONS, columns, DbHelper.H_ID+"="+horizonID, null, null, null, null);
-		Log.d("PrePopVals","Query: t="+DbHelper.TABLE_HORIZONS+" id="+horizonID);
-		Log.d("PrePopVals","Count: "+cursor.getCount());
 		if(cursor.getCount()!=0){
 			cursor.moveToFirst();
 			horizonName.setText(cursor.getString(cursor.getColumnIndex(DbHelper.H_ORDER)));
@@ -319,6 +321,9 @@ public class Horizon extends Activity{
 		    
 		    //Insert the image into the DB
 			insertImageDB(imageFileName);
+			this.imageList = loadImagesFromDB();
+			adapter = new ImageAdapter(this, imageList);
+			imageGallery.setAdapter(adapter);
 		}
 	}
 	
@@ -341,18 +346,19 @@ public class Horizon extends Activity{
 		db.close();
 	}
 	
-	private String loadImagesFromDB(){
+	private List<ImageModel> loadImagesFromDB(){
+		List<ImageModel> list = new ArrayList<ImageModel>();
 		db = dbHelper.getReadableDatabase();
 		String[] columns = new String[]{DbHelper.PIC_ID,DbHelper.PIC_TYPE, DbHelper.PIC_TYPEID, DbHelper.PIC_LOCATION};
 		Cursor cursor = db.query(DbHelper.TABLE_PICTURES, columns, DbHelper.PIC_TYPE+"='H' AND "+DbHelper.PIC_TYPEID+"="+this.horizonID, null, null, null, null);
+		
 		if(cursor.getCount() != 0){
-			cursor.moveToFirst();
-			images = cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION));
-/*			while( cursor.moveToNext()) {
-				images.add(cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION)));
-			}*/
+			while( cursor.moveToNext()) {
+				list.add(new ImageModel(cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION))));
+				Log.d("ImageAdapter","getimage:" + cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION)));
+			}
 		}
-		return images;
+		return list;
 	}
 	
 }

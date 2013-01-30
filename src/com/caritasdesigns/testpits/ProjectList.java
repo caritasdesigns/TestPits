@@ -35,11 +35,6 @@ public class ProjectList extends Activity {
 		super.onCreate(savedInstanceState);  
 		//Set View
 		setContentView(R.layout.activity_project);
-		//Set ImageLoader Configuration
-		 ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-		 .build();
-		 ImageLoader.getInstance().init(config);
-		
 		
 		//Open Database
 		dbHelper = new DbHelper(ProjectList.this);
