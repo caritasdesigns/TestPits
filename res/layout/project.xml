@@ -113,17 +113,18 @@
             android:paddingTop="@dimen/pad_height" >
 
             <Button
-                android:id="@+id/viewPictures"
+                android:id="@+id/takePicture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pictures: ##" />
-
-            <Button
-                android:id="@+id/addPicture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add a Picture" />
+                android:text="Take Picture" />
         </LinearLayout>
+
+        <GridView
+            android:id="@+id/pImageGallery"
+            android:layout_width="match_parent"
+            android:layout_height="217dp"
+            android:numColumns="3" >
+        </GridView>
 
         <Button
             android:id="@+id/addUpdateProject"

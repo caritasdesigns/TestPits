@@ -1,11 +1,21 @@
 package com.caritasdesigns.testpits;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,17 +26,22 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 
 public class Testpit extends Activity{
 
 	private static Mode testpitMode;
-	private Button button, addHorizon, viewHorizons, setLocation, mapLocation, clearLocation;
+	private Button button, addHorizon, viewHorizons, setLocation, mapLocation, clearLocation, takePicture;
 	private EditText testpitName;
-	private LinearLayout horizonButtonGroup;
+	private LinearLayout horizonButtonGroup, pictureButtonGroup;
+	private GridView imageGallery;
+	private List<ImageModel> imageList;
+	private ImageAdapter adapter;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
 	private static String testpitID, projectID;
+	private final static int  cameraData = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +65,9 @@ public class Testpit extends Activity{
 		this.mapLocation = (Button) findViewById(R.id.mapLocation);
 		this.clearLocation = (Button) findViewById(R.id.clearLocation);
 		this.horizonButtonGroup = (LinearLayout) findViewById(R.id.horizonButtonGroup);
+		this.pictureButtonGroup = (LinearLayout) findViewById(R.id.pictureButtonGroup);
+		this.takePicture = (Button) findViewById(R.id.takePicture);
+		this.imageGallery = (GridView) findViewById(R.id.tpImageGallery);
 		
 		switch(testpitMode){
 			case TESTPIT_CREATE_MODE:
@@ -59,7 +77,11 @@ public class Testpit extends Activity{
 			case TESTPIT_READ_MODE:
 				//Prepopulate the fields
 				this.prepopUpdateFields();
-				this.testpitReadMode();		
+				this.testpitReadMode();
+				this.imageList = loadImagesFromDB();
+				adapter = new ImageAdapter(this, imageList);
+				imageGallery.setAdapter(adapter);
+				break;
 		}
 		this.setOnClickListeners();
 	}
@@ -260,5 +282,92 @@ public class Testpit extends Activity{
 				v.getContext().startActivity(intent);
 			}
 		});
+		takePicture.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				//dispatchTakePictureIntent();
+				startActivityForResult(new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), cameraData);
+			}
+			
+		});
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == RESULT_OK)
+		{
+			Bundle extras = data.getExtras();
+			Bitmap bmp = (Bitmap) extras.get("data");
+		    String imageFileName = "H_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png";
+			
+			ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+			
+			
+			File internalStorageDir = contextWrapper.getDir("Images", Context.MODE_PRIVATE);
+			File tpPicture = new File(internalStorageDir, imageFileName);
+			
+			//Create the image directory if id does not exist
+			if (!internalStorageDir.exists()) 
+			{
+				internalStorageDir.mkdirs();
+			}
+			
+		    try
+		    {
+		    	//Write the image to the file
+		    	FileOutputStream fos = new FileOutputStream(tpPicture);
+				bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+				fos.flush();
+				fos.close();
+		    	Log.d("FileName",tpPicture.toString());
+		    }
+		    catch(IOException e)
+		    {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		    }
+		    
+		    //Insert the image into the DB
+			insertImageDB(imageFileName);
+			this.imageList = loadImagesFromDB();
+			adapter = new ImageAdapter(this, imageList);
+			imageGallery.setAdapter(adapter);
+		}
+	}
+	
+	
+	private void insertImageDB(String fileName){
+		//Open Database
+		dbHelper = new DbHelper(Testpit.this);
+		db = dbHelper.getWritableDatabase();
+		Log.d("insertpicture","method insertImageDB is called");
+		
+		//Create Content Values
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.PIC_TYPE, "TP");
+		values.put(DbHelper.PIC_TYPEID, testpitID);
+		values.put(DbHelper.PIC_LOCATION, fileName);
+		//TODO: Insert into Database  (returns -1 if error, else horizonID)
+		db.insert(DbHelper.TABLE_PICTURES, null, values);
+		//Close Database
+		dbHelper.close();
+		db.close();
+	}
+	
+	private List<ImageModel> loadImagesFromDB(){
+		List<ImageModel> list = new ArrayList<ImageModel>();
+		db = dbHelper.getReadableDatabase();
+		String[] columns = new String[]{DbHelper.PIC_ID,DbHelper.PIC_TYPE, DbHelper.PIC_TYPEID, DbHelper.PIC_LOCATION};
+		Cursor cursor = db.query(DbHelper.TABLE_PICTURES, columns, DbHelper.PIC_TYPE+"='TP' AND "+DbHelper.PIC_TYPEID+"="+ testpitID, null, null, null, null);
+		
+		if(cursor.getCount() != 0){
+			while( cursor.moveToNext()) {
+				list.add(new ImageModel(cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION))));
+				Log.d("ImageAdapter","getimage:" + cursor.getString(cursor.getColumnIndex(DbHelper.PIC_LOCATION)));
+			}
+		}
+		return list;
 	}
 }

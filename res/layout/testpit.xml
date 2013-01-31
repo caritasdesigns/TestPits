@@ -3,93 +3,112 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/testpits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-    <TextView
-        android:id="@+id/addUpdateTestpitTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="addUpdateTestpit"
-        android:textSize="25sp" />
-
-    <EditText
-        android:id="@+id/testpitName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Update Testpit Name" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp" >
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
+            android:id="@+id/addUpdateTestpitTitle"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="GPS: "
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:gravity="center_horizontal"
+            android:text="addUpdateTestpit"
+            android:textSize="25sp" />
 
-        <Button
-            android:id="@+id/mapLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Map" />
-
-        <Button
-            android:id="@+id/setLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Update" />
-
-        <Button
-            android:id="@+id/clearLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/horizonButtonGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/pad_height" >
-
-        <Button
-            android:id="@+id/viewHorizons"
+        <EditText
+            android:id="@+id/testpitName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Horizons: ##" />
+            android:ems="10"
+            android:hint="Update Testpit Name" />
 
-        <Button
-            android:id="@+id/addHorizon"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+        </RelativeLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add A Horizon" />
+            android:layout_marginLeft="10dp" >
 
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GPS: "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Button
+                android:id="@+id/mapLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map" />
+
+            <Button
+                android:id="@+id/setLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update" />
+
+            <Button
+                android:id="@+id/clearLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/horizonButtonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pad_height" >
+
+            <Button
+                android:id="@+id/viewHorizons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Horizons: ##" />
+
+            <Button
+                android:id="@+id/addHorizon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add A Horizon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pictureButtonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pad_height" >
+
+            <Button
+                android:id="@+id/takePicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take Picture" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/tpImageGallery"
+            android:layout_width="match_parent"
+            android:layout_height="217dp"
+            android:numColumns="3" >
+        </GridView>
+
+        <Button
+            android:id="@+id/addUpdateTestpit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit" />
     </LinearLayout>
-<Button
-    android:id="@+id/addUpdateTestpit"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Submit" />
-    
-</LinearLayout>
-
-
 
 </ScrollView>

@@ -237,12 +237,7 @@ public class Horizon extends Activity{
 		InputMethodManager imm = (InputMethodManager)getSystemService(
 			      Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-	}
-	
-	private void populateGallery(){
-		
-	}
-	
+	}	
 	
 	private void setOnClickListeners(){
 		button.setOnClickListener(new OnClickListener() {
@@ -274,12 +269,6 @@ public class Horizon extends Activity{
 			}
 			
 		});
-
-//		private void dispatchTakePictureIntent(int actionCode) {
-//		    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//		    startActivityForResult(takePictureIntent, actionCode);
-//		}
-		
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
