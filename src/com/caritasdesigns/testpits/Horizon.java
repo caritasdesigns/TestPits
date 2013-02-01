@@ -24,10 +24,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.AdapterView.OnItemClickListener;
 
 
 public class Horizon extends Activity{
@@ -37,7 +39,7 @@ public class Horizon extends Activity{
 	private LinearLayout pictureButtonGroup;
 	private EditText horizonName;
 	private GridView imageGallery;
-	private List<ImageModel> imageList;
+	private ImageGalleryModel imageGalleryModel;
 	private ImageAdapter adapter;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
@@ -80,9 +82,18 @@ public class Horizon extends Activity{
 			case HORIZON_READ_MODE:
 				//Prepopulate the fields
 				this.prepopUpdateFields();
-				this.horizonReadMode();	
-				this.imageList = loadImagesFromDB();
-				adapter = new ImageAdapter(this, imageList);
+				this.horizonReadMode();
+				
+				//populate it with the list of images
+				if(imageGalleryModel == null)
+				{
+					imageGalleryModel = new ImageGalleryModel(loadImagesFromDB());
+				}
+				else
+				{
+					this.imageGalleryModel.setImageList(loadImagesFromDB());
+				}
+				adapter = new ImageAdapter(this, imageGalleryModel.getImageList());
 				imageGallery.setAdapter(adapter);
 				break;
 		}
@@ -269,6 +280,18 @@ public class Horizon extends Activity{
 			}
 			
 		});
+		
+		imageGallery.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> av, View view, int position, long id) {
+				Intent intent = new Intent(getBaseContext(), ImageViewer.class);
+				intent.putExtra("imageGalleryModel", imageGalleryModel);
+				intent.putExtra("currentPosition", position);
+				view.getContext().startActivity(intent);
+			}
+			
+		});
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -310,8 +333,8 @@ public class Horizon extends Activity{
 		    
 		    //Insert the image into the DB
 			insertImageDB(imageFileName);
-			this.imageList = loadImagesFromDB();
-			adapter = new ImageAdapter(this, imageList);
+			this.imageGalleryModel.setImageList(loadImagesFromDB());
+			adapter = new ImageAdapter(this, imageGalleryModel.getImageList());
 			imageGallery.setAdapter(adapter);
 		}
 	}
@@ -335,8 +358,8 @@ public class Horizon extends Activity{
 		db.close();
 	}
 	
-	private List<ImageModel> loadImagesFromDB(){
-		List<ImageModel> list = new ArrayList<ImageModel>();
+	private ArrayList<ImageModel> loadImagesFromDB(){
+		ArrayList<ImageModel> list = new ArrayList<ImageModel>();
 		db = dbHelper.getReadableDatabase();
 		String[] columns = new String[]{DbHelper.PIC_ID,DbHelper.PIC_TYPE, DbHelper.PIC_TYPEID, DbHelper.PIC_LOCATION};
 		Cursor cursor = db.query(DbHelper.TABLE_PICTURES, columns, DbHelper.PIC_TYPE+"='H' AND "+DbHelper.PIC_TYPEID+"="+this.horizonID, null, null, null, null);

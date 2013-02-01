@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -17,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -36,7 +38,7 @@ public class Project extends Activity{
 	private LinearLayout testpitButtonGroup, MWButtonGroup, pictureButtonGroup;
 	private EditText projectName, client;
 	private GridView imageGallery;
-	private List<ImageModel> imageList;
+	private ImageGalleryModel imageGalleryModel;
 	private ImageAdapter adapter;
 	private DbHelper dbHelper;
 	private SQLiteDatabase db;
@@ -71,9 +73,21 @@ public class Project extends Activity{
 				//Prepopulate the fields
 				this.prepopUpdateFields();
 				//Set the Mode
-				this.projectReadMode();	
-				this.imageList = loadImagesFromDB();
-				adapter = new ImageAdapter(this, imageList);
+				this.projectReadMode();
+				
+				//Instantiate imageGalleryModel if it is null and
+				//populate it with the list of images
+				if(imageGalleryModel == null)
+				{
+					imageGalleryModel = new ImageGalleryModel(loadImagesFromDB());
+				}
+				else
+				{
+					this.imageGalleryModel.setImageList(loadImagesFromDB());
+				}
+				
+				
+				adapter = new ImageAdapter(this, imageGalleryModel.getImageList());
 				imageGallery.setAdapter(adapter);
 				break;
 			default:
@@ -326,6 +340,16 @@ public class Project extends Activity{
 				//dispatchTakePictureIntent();
 				startActivityForResult(new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), cameraData);
 			}
+		});
+		imageGallery.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> av, View view, int position, long id) {
+				Intent intent = new Intent(getBaseContext(), ImageViewer.class);
+				intent.putExtra("imageGalleryModel", imageGalleryModel);
+				intent.putExtra("currentPosition", position);
+				view.getContext().startActivity(intent);
+			}
 			
 		});
 	}
@@ -369,8 +393,8 @@ public class Project extends Activity{
 		    
 		    //Insert the image into the DB
 			insertImageDB(imageFileName);
-			this.imageList = loadImagesFromDB();
-			adapter = new ImageAdapter(this, imageList);
+			this.imageGalleryModel.setImageList(loadImagesFromDB());
+			adapter = new ImageAdapter(this, imageGalleryModel.getImageList());
 			imageGallery.setAdapter(adapter);
 		}
 	}
@@ -394,8 +418,8 @@ public class Project extends Activity{
 		db.close();
 	}
 	
-	private List<ImageModel> loadImagesFromDB(){
-		List<ImageModel> list = new ArrayList<ImageModel>();
+	private ArrayList<ImageModel> loadImagesFromDB(){
+		ArrayList<ImageModel> list = new ArrayList<ImageModel>();
 		db = dbHelper.getReadableDatabase();
 		String[] columns = new String[]{DbHelper.PIC_ID,DbHelper.PIC_TYPE, DbHelper.PIC_TYPEID, DbHelper.PIC_LOCATION};
 		Cursor cursor = db.query(DbHelper.TABLE_PICTURES, columns, DbHelper.PIC_TYPE+"='P' AND "+DbHelper.PIC_TYPEID+"="+ projectID, null, null, null, null);

@@ -33,6 +33,7 @@
         <activity android:name="com.caritasdesigns.testpits.Testpit" />
         <activity android:name="com.caritasdesigns.testpits.HorizonList" />
         <activity android:name="com.caritasdesigns.testpits.Horizon" />
+        <activity android:name="com.caritasdesigns.testpits.ImageViewer" />
         
     </application>
 
