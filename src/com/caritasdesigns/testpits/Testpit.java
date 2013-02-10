@@ -206,12 +206,14 @@ public class Testpit extends Activity{
 				this.clearLocation.setVisibility(View.GONE);
 				this.mapLocation.setVisibility(View.GONE);
 				this.horizonButtonGroup.setVisibility(View.GONE);
+				this.pictureButtonGroup.setVisibility(View.GONE);
 				break;
 			case TESTPIT_UPDATE_MODE:
 			case TESTPIT_READ_MODE:
 				this.clearLocation.setVisibility(View.VISIBLE);
 				this.mapLocation.setVisibility(View.VISIBLE);
 				this.horizonButtonGroup.setVisibility(View.VISIBLE);
+				this.pictureButtonGroup.setVisibility(View.VISIBLE);
 				break;
 			default:
 				Log.d("addUpdateProject","onClick'd issue with Mode: "+ testpitMode);

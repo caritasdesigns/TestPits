@@ -16,7 +16,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -29,6 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 public class Project extends Activity{
@@ -44,6 +44,7 @@ public class Project extends Activity{
 	private SQLiteDatabase db;
 	private static String projectID;
 	private final static int  cameraData = 0;
+	private ImageButton editButton;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class Project extends Activity{
 		imageGallery = (GridView) findViewById(R.id.pImageGallery);
 		
 		button = (Button) findViewById(R.id.addUpdateProject);
+		editButton = (ImageButton) findViewById(R.id.editButton);
 		projectName = (EditText) findViewById(R.id.projectName);
 		client = (EditText) findViewById(R.id.client);
 		projectName.setOnKeyListener(this.createOnKeyListener(projectName));
@@ -193,6 +195,8 @@ public class Project extends Activity{
 		this.projectName.setFocusable(false);
 		this.projectName.setFocusableInTouchMode(false);
 		this.projectName.setEnabled(false);
+		this.editButton.setImageResource(R.drawable.ic_list_edit);
+		this.setButtonVisibility();
 	}
 	
 	private void projectUpdateMode()
@@ -206,6 +210,8 @@ public class Project extends Activity{
 		this.projectName.setEnabled(true);
 		this.projectName.setFocusable(true);
 		this.projectName.setFocusableInTouchMode(true);
+		this.editButton.setImageResource(R.drawable.ic_list_save);
+		this.setButtonVisibility();
 	}
 	
 	private void setButtonVisibility(){
@@ -218,12 +224,20 @@ public class Project extends Activity{
 				this.pictureButtonGroup.setVisibility(View.GONE);
 				break;
 			case PROJECT_UPDATE_MODE:
+				this.clearLocation.setVisibility(View.GONE);
+				this.mapLocation.setVisibility(View.GONE);
+				this.testpitButtonGroup.setVisibility(View.GONE);
+				this.MWButtonGroup.setVisibility(View.GONE);
+				this.pictureButtonGroup.setVisibility(View.GONE);
+				this.button.setVisibility(View.GONE);
+				break;
 			case PROJECT_READ_MODE:
 				this.clearLocation.setVisibility(View.VISIBLE);
 				this.mapLocation.setVisibility(View.VISIBLE);
 				this.testpitButtonGroup.setVisibility(View.VISIBLE);
 				this.MWButtonGroup.setVisibility(View.VISIBLE);
 				this.pictureButtonGroup.setVisibility(View.VISIBLE);
+				this.button.setVisibility(View.GONE);
 				break;
 			default:
 				Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
@@ -284,6 +298,26 @@ public class Project extends Activity{
 				}
 			}
 		});
+		//Edit/Update button Listener.
+		editButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				switch(projectMode){
+					case PROJECT_UPDATE_MODE:
+						updateProject();
+						projectReadMode();
+						break;
+					case PROJECT_READ_MODE:
+						projectUpdateMode();
+						break;
+					default:
+						Log.d("addUpdateProject","onClick'd issue with Mode: "+ projectMode);
+						break;
+				}
+			}
+		});
+		
 		//Set OnClick Listener for "View Testpits" button
 		viewTestpits = (Button) findViewById(R.id.viewTestpits);
 		viewTestpits.setOnClickListener(new OnClickListener() {

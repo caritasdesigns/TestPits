@@ -95,14 +95,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Take Picture" />
-        </LinearLayout>
 
-        <GridView
-            android:id="@+id/tpImageGallery"
-            android:layout_width="match_parent"
-            android:layout_height="217dp"
-            android:numColumns="3" >
-        </GridView>
+            <GridView
+                android:id="@+id/tpImageGallery"
+                android:layout_width="match_parent"
+                android:layout_height="217dp"
+                android:numColumns="3" >
+            </GridView>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/addUpdateTestpit"
